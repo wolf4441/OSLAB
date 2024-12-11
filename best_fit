@@ -1,0 +1,53 @@
+ #include <stdio.h> 
+ #define max 25 
+ //blocks=memory partitions, files=processes 
+void main()  //bestfit works fine 
+{ 
+    printf("***BEST FIT***\n"); 
+ 
+    //frag[max]-store fragmentation, b[max]=blocksize, f[max]=filesize 
+    int frag[max], b[max], f[max], i, j, nb, nf, temp, lowest = 10000; 
+    //temp, lowest: Temporary variables used in calculations 
+    static int bf[max], ff[max]; //allocated blocks & files 
+     printf("\nEnter the number of blocks: "); 
+     scanf("%d", &nb);   // no of blocks 
+     printf("Enter the number of files:"); 
+     scanf("%d", &nf);   // no of files 
+     printf("\nEnter the size of the blocks:-\n"); 
+     for (i = 1; i <= nb; i++) 
+       { printf("Block %d:", i); 
+     scanf("%d", &b[i]); 
+     } 
+     printf("Enter the size of the files :-\n"); 
+     for (i = 1; i <= nf; i++) 
+    { 
+ printf("File %d:", i); 
+  scanf("%d", &f[i]); 
+    } 
+     for (i = 1; i <= nf; i++)  //iterates over each file i 
+    { 
+  for (j = 1; j <= nb; j++)  //for each file, it iterates over each block (j). 
+    { 
+      if (bf[j] != 1) //block hasn't been allocated 
+        { 
+ 
+            // calculates remaining space (temp) in the block after allocating the file. 
+  temp = b[j] - f[i]; 
+   if (temp >= 0) 
+       if (lowest > temp) 
+                { 
+    ff[i] = j; //stores index of block j in ff[i] 
+    lowest = temp; //updates lowest 
+                } 
+        } 
+    } 
+         frag[i] = lowest;   //stores the fragmentation value in frag[i] 
+         //After finding the best fit block for the file, 
+         //it marks the block as allocated (bf[ff[i]] = 1) 
+         bf[ff[i]] = 1; 
+         lowest = 10000; 
+} 
+printf("\nFile No\tFile Size \tBlock No\tBlock Size\tFragment"); 
+     for (i = 1; i <= nf && ff[i] != 0; i++) 
+        printf("\n%d\t\t%d\t\t%d\t\t%d\t\t%d", i, f[i], ff[i], b[ff[i]], frag[i]); 
+}
