@@ -1,0 +1,79 @@
+#include <stdio.h> 
+ 
+int frames[3]; 
+ 
+void displayFrames() { 
+    int i; 
+    printf("\n"); 
+    for (i = 0; i < 3; i++) 
+        printf("\t%d\n", frames[i]); 
+} 
+ 
+void main() { 
+    printf("---7b. LRU PAGE REPLACEMENT---"); 
+    int index, k, l, pageFoundInFrames = 0, pageInserted = 0, pageFaults = 0, frameSize = 3; 
+ 
+   // int pageReferences[12] = {2, 3, 2, 1, 5, 2, 4, 5, 3, 2, 5, 2}, i, j, pageStatus[3]; 
+//for the above string with 12 page references: 7 page faults 
+ 
+   // int pageReferences[20] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1}, i, j, pageStatus[3]; 
+ 
+//for the above string with 20 page references: 12 page faults 
+ 
+//int pageReferences[22] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3,0,3, 2, 1, 2, 0, 1, 7, 0, 1}, i, j, pageStatus[3]; 
+//for the above string with 22 page references: 12 page faults 
+ 
+int pageReferences[12] = {1,2,3,4,1,2,5,1,2,3,4,5}, i, j, pageStatus[3]; 
+//for the above string with 12 page references: 10 page faults 
+ 
+    for (i = 0; i < frameSize; i++) 
+    { 
+        frames[i] = -1; 
+    } 
+ 
+    for (j = 0; j < 12; j++) //change here loop counter value 
+    { 
+        pageFoundInFrames = 0; 
+        pageInserted = 0; 
+ 
+        for (i = 0; i < frameSize; i++) { 
+            if (frames[i] == pageReferences[j]) { 
+                pageFoundInFrames = 1; 
+                break; 
+            } 
+        } 
+ 
+        if (!pageFoundInFrames) { 
+            for (i = 0; i < frameSize; i++) { 
+                if (frames[i] == -1) { 
+                    frames[i] = pageReferences[j]; 
+                    pageInserted = 1; 
+                    break; 
+                } 
+            } 
+ 
+            if (!pageInserted) { 
+                for (i = 0; i < frameSize; i++) { 
+                    pageStatus[i] = 0; 
+                } 
+ 
+                for (k = j - 1, l = 1; l <= frameSize - 1; l++, k--) { 
+                    for (i = 0; i < frameSize; i++) { 
+                        if (frames[i] == pageReferences[k]) { 
+                            pageStatus[i] = 1; 
+                        } 
+                    } 
+                } 
+                for (i = 0; i < frameSize; i++) { 
+                    if (pageStatus[i] == 0) { 
+                        index = i; 
+                    } 
+                } 
+                frames[index] = pageReferences[j]; 
+                pageFaults++; 
+            } 
+        } 
+        displayFrames(); 
+    } 
+    printf("\nNumber of page faults: %d\n", pageFaults + frameSize); 
+} 
